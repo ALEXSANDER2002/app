@@ -1,6 +1,9 @@
+// Verifica se o código está rodando no navegador
+const isBrowser = typeof window !== 'undefined'
+
 // Verifica o status do service worker
 export const checkServiceWorkerStatus = async (): Promise<string> => {
-  if (!("serviceWorker" in navigator)) {
+  if (!isBrowser || !("serviceWorker" in navigator)) {
     return "Service Worker não suportado"
   }
 
@@ -27,17 +30,19 @@ export const checkServiceWorkerStatus = async (): Promise<string> => {
 
 // Verifica se o app está instalado
 export const isPWAInstalled = (): boolean => {
+  if (!isBrowser) return false
   return window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone === true
 }
 
 // Verifica se o dispositivo está online
 export const isOnline = (): boolean => {
+  if (!isBrowser) return true
   return navigator.onLine
 }
 
 // Registra o service worker
 export const registerServiceWorker = async (): Promise<void> => {
-  if (!("serviceWorker" in navigator)) {
+  if (!isBrowser || !("serviceWorker" in navigator)) {
     console.log("Service Worker não é suportado neste navegador")
     return
   }
@@ -61,7 +66,7 @@ export const registerServiceWorker = async (): Promise<void> => {
 
 // Força a atualização do service worker
 export const updateServiceWorker = async (): Promise<boolean> => {
-  if (!("serviceWorker" in navigator)) {
+  if (!isBrowser || !("serviceWorker" in navigator)) {
     return false
   }
 
@@ -89,7 +94,7 @@ export const updateServiceWorker = async (): Promise<boolean> => {
 
 // Limpa o cache do service worker
 export const clearCache = async (): Promise<boolean> => {
-  if (!("caches" in window)) {
+  if (!isBrowser || !("caches" in window)) {
     return false
   }
 
@@ -105,7 +110,7 @@ export const clearCache = async (): Promise<boolean> => {
 
 // Verifica se há atualizações disponíveis
 export const checkForUpdates = async (): Promise<boolean> => {
-  if (!("serviceWorker" in navigator)) {
+  if (!isBrowser || !("serviceWorker" in navigator)) {
     return false
   }
 
@@ -136,7 +141,7 @@ export const checkForUpdates = async (): Promise<boolean> => {
 
 // Aplica atualizações pendentes
 export const applyPendingUpdates = async (): Promise<boolean> => {
-  if (!("serviceWorker" in navigator)) {
+  if (!isBrowser || !("serviceWorker" in navigator)) {
     return false
   }
 
@@ -165,6 +170,8 @@ export const applyPendingUpdates = async (): Promise<boolean> => {
 
 // Verifica se o navegador suporta PWA
 export const isPWASupported = (): boolean => {
+  if (!isBrowser) return false
+
   // Check if we're in a preview environment
   const isPreviewEnvironment =
     window.location.hostname.includes("vusercontent.net") || window.location.hostname.includes("vercel.app")
@@ -183,6 +190,8 @@ export const isPWASupported = (): boolean => {
 
 // Mostra um prompt para instalar o PWA
 export const showInstallPrompt = async (): Promise<boolean> => {
+  if (!isBrowser) return false
+
   // Verifica se temos o evento beforeinstallprompt armazenado
   const promptEvent = (window as any).deferredPrompt
 
@@ -209,6 +218,8 @@ export const showInstallPrompt = async (): Promise<boolean> => {
 
 // Configura o listener para o evento beforeinstallprompt
 export const setupInstallPrompt = (): void => {
+  if (!isBrowser) return
+
   window.addEventListener("beforeinstallprompt", (e) => {
     // Previne o comportamento padrão
     e.preventDefault()

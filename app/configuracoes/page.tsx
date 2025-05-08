@@ -21,7 +21,7 @@ export default function ConfiguracoesPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [dbSize, setDbSize] = useState<string>("Calculando...")
   const [isPreviewEnv, setIsPreviewEnv] = useState(false)
-  const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const [isLocalhost, setIsLocalhost] = useState(false)
 
   useEffect(() => {
     // Verifica se o usuário está logado
@@ -43,6 +43,9 @@ export default function ConfiguracoesPage() {
     const isPreview =
       window.location.hostname.includes("vusercontent.net") || window.location.hostname.includes("vercel.app")
     setIsPreviewEnv(isPreview)
+
+    // Verifica se estamos em localhost
+    setIsLocalhost(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
 
     // Calcula o tamanho aproximado do banco de dados
     calculateDbSize()

@@ -39,7 +39,7 @@ export default function RootLayout({
         {/* Script para registrar o Service Worker com verificação de ambiente */}
         <Script id="register-sw" strategy="afterInteractive">
           {`
-            if ('serviceWorker' in navigator) {
+            if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
               // Check if we're in a preview environment
               const isPreviewEnvironment = window.location.hostname.includes('vusercontent.net') || 
                                           window.location.hostname.includes('vercel.app');
@@ -64,24 +64,24 @@ export default function RootLayout({
         {/* Script para detectar modo offline */}
         <Script id="offline-detection" strategy="afterInteractive">
           {`
-            function updateOnlineStatus() {
-              const statusIndicator = document.getElementById('network-status');
-              if (statusIndicator) {
-                if (navigator.onLine) {
-                  statusIndicator.classList.remove('offline');
-                  statusIndicator.classList.add('online');
-                } else {
-                  statusIndicator.classList.remove('online');
-                  statusIndicator.classList.add('offline');
+            if (typeof window !== 'undefined') {
+              function updateOnlineStatus() {
+                const statusIndicator = document.getElementById('network-status');
+                if (statusIndicator) {
+                  if (navigator.onLine) {
+                    statusIndicator.classList.remove('offline');
+                    statusIndicator.classList.add('online');
+                  } else {
+                    statusIndicator.classList.remove('online');
+                    statusIndicator.classList.add('offline');
+                  }
                 }
               }
-            }
 
-            window.addEventListener('online', updateOnlineStatus);
-            window.addEventListener('offline', updateOnlineStatus);
-            
-            // Executa na inicialização
-            if (typeof window !== 'undefined') {
+              window.addEventListener('online', updateOnlineStatus);
+              window.addEventListener('offline', updateOnlineStatus);
+              
+              // Executa na inicialização
               window.addEventListener('load', updateOnlineStatus);
             }
           `}
